@@ -29,14 +29,14 @@ func (s *Store) GetUserByEmail(email string) (*types.User, error) {
 		}
 	}
 
-	if u.ID == "" {
+	if u.ID == 0 {
 		return nil, fmt.Errorf("user not found")
 	}
 
 	return u, nil
 }
 
-func (s *Store) GetUserByID(id string) (*types.User, error) {
+func (s *Store) GetUserByID(id int) (*types.User, error) {
 	return nil, nil // not finish
 }
 
