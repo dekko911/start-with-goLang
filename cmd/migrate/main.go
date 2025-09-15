@@ -46,7 +46,7 @@ func main() {
 			log.Fatal(err)
 		}
 
-		log.Println("Successfully created!")
+		log.Println("Migration created successfully!")
 	}
 
 	if cmd == "down" {
@@ -54,6 +54,6 @@ func main() {
 			log.Fatal(err)
 		}
 
-		log.Println("Successfully deleted!")
+		log.Println("Migration deleted successfully!")
 	}
 }
