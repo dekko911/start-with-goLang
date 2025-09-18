@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dekko911/start-with-goLang/service/product"
 	"github.com/dekko911/start-with-goLang/service/user"
 	"github.com/gorilla/mux"
 )
@@ -14,7 +15,7 @@ type APIServer struct {
 	db      *sql.DB
 }
 
-// Creating a new Instance of the API Server.
+// Creating a new Instance of the API Server. alias construct.
 func NewAPIServer(address string, db *sql.DB) *APIServer {
 	return &APIServer{
 		address: address,
@@ -22,17 +23,22 @@ func NewAPIServer(address string, db *sql.DB) *APIServer {
 	}
 }
 
-// Running & Listening the server. The 's' stands for server.
+// This routes for api.
 func (s *APIServer) Run() error {
 	router := mux.NewRouter()
 	subrouter := router.PathPrefix("/api/v1").Subrouter()
 
+	// user routes
 	userStore := user.NewStore(s.db)
-
 	userHandler := user.NewHandler(userStore)
 	userHandler.RegisterRoutes(subrouter)
 
-	log.Println("Listening on port " + s.address)
+	// product routes
+	productStore := product.NewStore(s.db)
+	productHandler := product.NewHandler(productStore, userStore)
+	productHandler.RegisterRoutes(subrouter)
+
+	log.Println("Listening on port", s.address)
 
 	return http.ListenAndServe(s.address, router)
 }

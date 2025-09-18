@@ -12,6 +12,8 @@ import (
 	"github.com/gorilla/mux"
 )
 
+// ini adalah tempat menaruh business logic.
+
 type Handler struct {
 	store types.UserStore
 }
@@ -21,8 +23,8 @@ func NewHandler(store types.UserStore) *Handler {
 }
 
 func (h *Handler) RegisterRoutes(r *mux.Router) {
-	r.HandleFunc("/login", h.handleLogin).Methods("POST")
-	r.HandleFunc("/register", h.handleRegister).Methods("POST")
+	r.HandleFunc("/login", h.handleLogin).Methods(http.MethodPost)
+	r.HandleFunc("/register", h.handleRegister).Methods(http.MethodPost)
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -61,12 +63,15 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusOK, map[string]string{"token": token})
+	utils.WriteJSON(w, http.StatusOK, map[string]any{
+		"status": http.StatusOK,
+		"token":  token,
+	})
 }
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	// get JSON payload
-	var payload types.RegisterUserPayload
+	payload := types.RegisterUserPayload{}
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return
@@ -105,5 +110,8 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	utils.WriteJSON(w, http.StatusCreated, nil)
+	utils.WriteJSON(w, http.StatusCreated, map[string]any{
+		"status":  http.StatusCreated,
+		"message": "User Created!",
+	})
 }

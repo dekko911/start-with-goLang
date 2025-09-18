@@ -7,6 +7,8 @@ import (
 	"github.com/dekko911/start-with-goLang/types"
 )
 
+// ini adalah tempat menaruh query logic.
+
 type Store struct {
 	db *sql.DB
 }

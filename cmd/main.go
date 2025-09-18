@@ -10,7 +10,7 @@ import (
 	"github.com/go-sql-driver/mysql"
 )
 
-// For getting database connection.
+// Database connection.
 func initStorage(db *sql.DB) {
 	err := db.Ping()
 	if err != nil {

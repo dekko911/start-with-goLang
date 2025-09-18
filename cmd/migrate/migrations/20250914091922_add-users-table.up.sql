@@ -6,7 +6,7 @@ CREATE TABLE
         `email` VARCHAR(255) NOT NULL,
         `password` VARCHAR(255) NOT NULL,
         `created_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP,
-        `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- this will use, when do an updating data at table users
+        `updated_at` TIMESTAMP NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, -- this will useful, when do an updating data at table users
         PRIMARY KEY (`id`),
         UNIQUE KEY (`email`)
     );

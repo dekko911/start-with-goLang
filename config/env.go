@@ -2,7 +2,6 @@ package config
 
 import (
 	"fmt"
-	"log"
 	"os"
 	"strconv"
 
@@ -18,10 +17,7 @@ var Env = initConfig()
 
 // Getting config at env file or somewhere else.
 func initConfig() Config {
-	err := godotenv.Load()
-	if err != nil {
-		log.Fatal(err)
-	}
+	godotenv.Load()
 
 	DBHost := os.Getenv("DB_HOST")
 	DBPort := os.Getenv("DB_PORT")

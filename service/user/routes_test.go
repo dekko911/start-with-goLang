@@ -24,7 +24,10 @@ func TestUserServiceHandler(t *testing.T) {
 			Password: "asd",
 		}
 
-		marshalled, _ := json.Marshal(payload)
+		marshalled, err := json.Marshal(payload)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		req, err := http.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(marshalled))
 		if err != nil {
@@ -47,10 +50,13 @@ func TestUserServiceHandler(t *testing.T) {
 			Name:     "miko",
 			Username: "mikontiaw666",
 			Email:    "asd@email.com",
-			Password: "asd",
+			Password: "asd1234",
 		}
 
-		marshalled, _ := json.Marshal(payload)
+		marshalled, err := json.Marshal(payload)
+		if err != nil {
+			t.Fatal(err)
+		}
 
 		req, err := http.NewRequest(http.MethodPost, "/register", bytes.NewBuffer(marshalled))
 		if err != nil {
@@ -72,11 +78,11 @@ func TestUserServiceHandler(t *testing.T) {
 type mockUserStore struct{}
 
 func (m *mockUserStore) GetUserByEmail(email string) (*types.User, error) {
-	return nil, fmt.Errorf("user not found")
+	return &types.User{}, fmt.Errorf("user not found")
 }
 
 func (m *mockUserStore) GetUserByID(id int) (*types.User, error) {
-	return nil, nil
+	return &types.User{}, nil
 }
 
 func (m *mockUserStore) CreateUser(user types.User) error {
