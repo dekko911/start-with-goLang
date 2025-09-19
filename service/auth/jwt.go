@@ -16,7 +16,7 @@ import (
 
 type contextKey string
 
-const UserKey contextKey = "userId"
+const UserKey contextKey = "userID"
 
 func WithJWTAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -36,18 +36,18 @@ func WithJWTAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.Handl
 		}
 
 		claims := token.Claims.(jwt.MapClaims)
-		str := claims["userId"].(string)
+		str := claims["userID"].(string)
 
 		userId, err := strconv.Atoi(str)
 		if err != nil {
-			log.Printf("failed to convert userId to int: %v", err)
+			log.Printf("failed to convert userID to int: %v", err)
 			permissionDenied(w)
 			return
 		}
 
 		u, err := store.GetUserByID(userId)
 		if err != nil {
-			log.Printf("failed to get user by id: %v", err)
+			log.Printf("failed to get user by ID: %v", err)
 			permissionDenied(w)
 			return
 		}
@@ -98,10 +98,10 @@ func permissionDenied(w http.ResponseWriter) {
 }
 
 func GetUserIDFromContext(ctx context.Context) int {
-	userId, ok := ctx.Value(UserKey).(int)
+	userID, ok := ctx.Value(UserKey).(int)
 	if !ok {
 		return -1
 	}
 
-	return userId
+	return userID
 }

@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 
 	"github.com/go-playground/validator/v10"
 )
@@ -32,16 +33,18 @@ func WriteError(w http.ResponseWriter, status int, err error) {
 }
 
 func GetTokenFromRequest(r *http.Request) string {
-	tokenAuth := r.Header.Get("Authorization")
+	tokenHeader := r.Header.Get("Authorization")
+
+	tokenAuth := strings.TrimPrefix(tokenHeader, "Bearer ")
+	tokenAuth = strings.TrimSpace(tokenAuth)
+
 	tokenQuery := r.URL.Query().Get("token")
 
 	switch {
 	case tokenAuth != "":
 		return tokenAuth
-
 	case tokenQuery != "":
 		return tokenQuery
-
 	}
 
 	return ""

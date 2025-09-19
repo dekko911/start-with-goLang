@@ -1,11 +1,11 @@
 CREATE TABLE
     IF NOT EXISTS `order_items` (
         `id` INT UNSIGNED NOT NULL AUTO_INCREMENT,
-        `orderId` INT UNSIGNED NOT NULL,
-        `productId` INT UNSIGNED NOT NULL,
+        `orderID` INT UNSIGNED NOT NULL,
+        `productID` INT UNSIGNED NOT NULL,
         `quantity` INT NOT NULL,
         `price` DECIMAL(10, 2) NOT NULL,
         PRIMARY KEY (`id`),
-        CONSTRAINT `fk_order_items_orderId` FOREIGN KEY (`orderId`) REFERENCES orders (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-        CONSTRAINT `fk_order_items_productId` FOREIGN KEY (`productId`) REFERENCES products (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+        CONSTRAINT `fk_order_items_orderID` FOREIGN KEY (`orderID`) REFERENCES orders (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+        CONSTRAINT `fk_order_items_productID` FOREIGN KEY (`productID`) REFERENCES products (`id`) ON DELETE CASCADE ON UPDATE CASCADE
     );
