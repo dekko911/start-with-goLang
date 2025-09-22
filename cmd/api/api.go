@@ -5,6 +5,8 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/dekko911/start-with-goLang/service/cart"
+	"github.com/dekko911/start-with-goLang/service/order"
 	"github.com/dekko911/start-with-goLang/service/product"
 	"github.com/dekko911/start-with-goLang/service/user"
 	"github.com/gorilla/mux"
@@ -37,6 +39,12 @@ func (s *APIServer) Run() error {
 	productStore := product.NewStore(s.db)
 	productHandler := product.NewHandler(productStore, userStore)
 	productHandler.RegisterRoutes(subrouter)
+
+	// order routes
+	orderStore := order.NewStore(s.db)
+
+	cartHandler := cart.NewHandler(productStore, userStore, orderStore)
+	cartHandler.RegisterRoutes(subrouter)
 
 	log.Println("Listening on port", s.address)
 

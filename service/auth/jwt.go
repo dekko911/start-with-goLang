@@ -18,6 +18,7 @@ type contextKey string
 
 const UserKey contextKey = "userID"
 
+// middleware using JWT token
 func WithJWTAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		tokenString := utils.GetTokenFromRequest(r)
@@ -55,24 +56,19 @@ func WithJWTAuth(handlerFunc http.HandlerFunc, store types.UserStore) http.Handl
 		// add the user to the context
 		ctx := r.Context()
 		ctx = context.WithValue(ctx, UserKey, u.ID)
-		r = r.WithContext(ctx)
 
 		// call the function if the token is valid
-		handlerFunc(w, r)
+		handlerFunc(w, r.WithContext(ctx))
 	}
 }
 
+// create JWT token
 func CreateJWT(secret []byte, userID int) (string, error) {
-	loc, err := time.LoadLocation("Asia/Kuala_Lumpur")
-	if err != nil {
-		return "", err
-	}
-
 	expiration := time.Second * time.Duration(config.Env.JWTExpirationInSeconds)
 
 	token := jwt.NewWithClaims(jwt.SigningMethodHS256, jwt.MapClaims{
 		"userID":     strconv.Itoa(userID),
-		"expired_at": time.Now().In(loc).Add(expiration).Unix(),
+		"expired_at": time.Now().Add(expiration).Unix(),
 	})
 
 	tokenString, err := token.SignedString(secret)
@@ -83,6 +79,7 @@ func CreateJWT(secret []byte, userID int) (string, error) {
 	return tokenString, nil
 }
 
+// validate the JWT token
 func validateJWT(tokenString string) (*jwt.Token, error) {
 	return jwt.Parse(tokenString, func(token *jwt.Token) (any, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {

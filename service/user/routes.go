@@ -12,7 +12,7 @@ import (
 	"github.com/gorilla/mux"
 )
 
-// ini adalah tempat menaruh business logic.
+// ini adalah tempat menaruh routes + business logic.
 
 type Handler struct {
 	store types.UserStore
@@ -71,7 +71,7 @@ func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
 
 func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 	// get JSON payload
-	payload := types.RegisterUserPayload{}
+	var payload types.RegisterUserPayload
 	if err := utils.ParseJSON(r, &payload); err != nil {
 		utils.WriteError(w, http.StatusBadRequest, err)
 		return

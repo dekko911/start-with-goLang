@@ -53,7 +53,7 @@ func TestProductServiceHandler(t *testing.T) {
 	})
 
 	t.Run("it should handle get product by ID", func(t *testing.T) {
-		req, err := http.NewRequest(http.MethodGet, "/products/100", nil)
+		req, err := http.NewRequest(http.MethodGet, "/products/1", nil)
 		if err != nil {
 			t.Fatal(err)
 		}
@@ -61,7 +61,7 @@ func TestProductServiceHandler(t *testing.T) {
 		rr := httptest.NewRecorder()
 		router := mux.NewRouter()
 
-		router.HandleFunc("/products/{productId}", handler.handleGetProductByID).Methods(http.MethodGet)
+		router.HandleFunc("/products/{productID}", handler.handleGetProductByID).Methods(http.MethodGet)
 
 		router.ServeHTTP(rr, req)
 

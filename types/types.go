@@ -15,19 +15,42 @@ type User struct {
 }
 
 type Product struct {
-	ID          int     `json:"id"`
-	Name        string  `json:"name"`
-	Description string  `json:"description"`
-	Image       string  `json:"image"`
-	Price       float64 `json:"price"`
-	// note that this isn't the best way to handle quantity
-	// because it's not atomic (in ACID), but it's good enough for this example
-	Quantity  int       `json:"quantity"`
+	ID          int       `json:"id"`
+	Name        string    `json:"name"`
+	Description string    `json:"description"`
+	Image       string    `json:"image"`
+	Price       float64   `json:"price"`
+	Quantity    int       `json:"quantity"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
+type Order struct {
+	ID        int       `json:"id"`
+	UserID    int       `json:"userID"`
+	Total     float64   `json:"total"`
+	Status    string    `json:"status"`
+	Address   string    `json:"address"`
 	CreatedAt time.Time `json:"created_at"`
 	UpdatedAt time.Time `json:"updated_at"`
 }
 
-// method for handlers
+type OrderItem struct {
+	ID        int       `json:"id"`
+	OrderID   int       `json:"orderID"`
+	ProductID int       `json:"productID"`
+	Quantity  int       `json:"quantity"`
+	Price     float64   `json:"price"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+type CartCheckoutItem struct {
+	ProductID int `json:"productID"`
+	Quantity  int `json:"quantity"`
+}
+
+// method for repository
 
 type UserStore interface {
 	GetUserByEmail(email string) (*User, error)
@@ -41,6 +64,11 @@ type ProductStore interface {
 	GetProducts() ([]*Product, error)
 	CreateProduct(CreateProductPayload) error
 	UpdateProduct(Product) error
+}
+
+type OrderStore interface {
+	CreateOrder(Order) (int, error)
+	CreateOrderItem(OrderItem) error
 }
 
 // for request in JSON
@@ -63,4 +91,8 @@ type CreateProductPayload struct {
 	Image       string  `json:"image"`
 	Price       float64 `json:"price" validate:"required"`
 	Quantity    int     `json:"quantity" validate:"required"`
+}
+
+type CartCheckoutPayload struct {
+	Items []CartCheckoutItem `json:"items" validate:"required"`
 }
