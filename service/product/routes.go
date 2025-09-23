@@ -8,6 +8,7 @@ import (
 	"github.com/dekko911/start-with-goLang/service/auth"
 	"github.com/dekko911/start-with-goLang/types"
 	"github.com/dekko911/start-with-goLang/utils"
+	"github.com/go-playground/validator/v10"
 	"github.com/gorilla/mux"
 )
 
@@ -81,7 +82,8 @@ func (h *Handler) handleCreateProduct(w http.ResponseWriter, r *http.Request) {
 
 	// validate the payload
 	if err := utils.Validate.Struct(payload); err != nil {
-		utils.WriteError(w, http.StatusBadRequest, err)
+		errors := err.(validator.ValidationErrors)
+		utils.WriteError(w, http.StatusBadRequest, errors)
 		return
 	}
 

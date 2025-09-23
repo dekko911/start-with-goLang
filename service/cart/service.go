@@ -68,7 +68,9 @@ func (h *Handler) createOrder(products []types.Product, cartItems []types.CartCh
 	for _, item := range cartItems {
 		product := productsMap[item.ProductID]
 		product.Quantity -= item.Quantity
-		h.store.UpdateProduct(product)
+		if err := h.store.UpdateProduct(product); err != nil {
+			return 0, 0, err
+		}
 	}
 
 	// create order record
@@ -84,12 +86,15 @@ func (h *Handler) createOrder(products []types.Product, cartItems []types.CartCh
 
 	// create order the items records
 	for _, item := range cartItems {
-		h.orderStore.CreateOrderItem(types.OrderItem{
+		err := h.orderStore.CreateOrderItem(types.OrderItem{
 			OrderID:   orderID,
 			ProductID: item.ProductID,
 			Quantity:  item.Quantity,
 			Price:     productsMap[item.ProductID].Price,
 		})
+		if err != nil {
+			return 0, 0, err
+		}
 	}
 
 	return orderID, totalPrice, nil

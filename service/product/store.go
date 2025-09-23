@@ -58,12 +58,9 @@ func (s *Store) GetProductsByID(ids []int) ([]types.Product, error) {
 	query := fmt.Sprintf("SELECT * FROM products WHERE id IN (?%s)", placeholders)
 
 	args := make([]any, len(ids))
-	copy(args, args) // <- IMPORTANT YOU KNOW !!!!!!!!!!!!
-
-	// if error, use this down below
-	// for i, v := range args {
-	// 	args[i] = v
-	// }
+	for i, v := range ids {
+		args[i] = v
+	}
 
 	rows, err := s.db.Query(query, args...)
 	if err != nil {
@@ -110,6 +107,7 @@ func (s *Store) CreateProduct(p types.CreateProductPayload) error {
 		p.Description,
 		p.Quantity,
 	}
+
 	_, err := s.db.Exec("INSERT INTO products (name, price, image, description, quantity) VALUES (?,?,?,?,?)", product...)
 	if err != nil {
 		return err
@@ -127,6 +125,7 @@ func (s *Store) UpdateProduct(p types.Product) error {
 		p.Quantity,
 		p.ID,
 	}
+
 	_, err := s.db.Exec("UPDATE products SET name = ?, price = ?, image = ?, description = ?, quantity = ? WHERE id = ?", product...)
 	if err != nil {
 		return err

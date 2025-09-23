@@ -3,6 +3,7 @@ package user
 import (
 	"fmt"
 	"net/http"
+	"strconv"
 
 	"github.com/dekko911/start-with-goLang/config"
 	"github.com/dekko911/start-with-goLang/service/auth"
@@ -25,6 +26,9 @@ func NewHandler(store types.UserStore) *Handler {
 func (h *Handler) RegisterRoutes(r *mux.Router) {
 	r.HandleFunc("/login", h.handleLogin).Methods(http.MethodPost)
 	r.HandleFunc("/register", h.handleRegister).Methods(http.MethodPost)
+
+	// admin routes
+	r.HandleFunc("/users/{userID}", auth.WithJWTAuth(h.handleGetUser, h.store)).Methods(http.MethodGet)
 }
 
 func (h *Handler) handleLogin(w http.ResponseWriter, r *http.Request) {
@@ -110,8 +114,38 @@ func (h *Handler) handleRegister(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	user := map[string]string{
+		"Name":     payload.Name,
+		"Email":    payload.Email,
+		"Username": payload.Username,
+	}
+
 	utils.WriteJSON(w, http.StatusCreated, map[string]any{
 		"status":  http.StatusCreated,
 		"message": "User Created!",
+		"user":    user,
 	})
+}
+
+func (h *Handler) handleGetUser(w http.ResponseWriter, r *http.Request) {
+	vars := mux.Vars(r)
+	str, ok := vars["userID"]
+	if !ok {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("missing user ID"))
+		return
+	}
+
+	userID, err := strconv.Atoi(str)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, fmt.Errorf("invalid type user ID"))
+		return
+	}
+
+	user, err := h.store.GetUserByID(userID)
+	if err != nil {
+		utils.WriteError(w, http.StatusBadRequest, err)
+		return
+	}
+
+	utils.WriteJSON(w, http.StatusOK, user)
 }

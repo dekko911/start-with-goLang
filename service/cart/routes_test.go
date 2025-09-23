@@ -16,7 +16,7 @@ var mockProducts = []types.Product{
 	{ID: 2, Name: "product 2", Price: 20, Quantity: 200},
 	{ID: 3, Name: "product 3", Price: 30, Quantity: 300},
 	{ID: 4, Name: "empty stock product", Price: 40, Quantity: 0},
-	{ID: 5, Name: "last product", Price: 50, Quantity: 1},
+	{ID: 5, Name: "last product", Price: 30, Quantity: 1},
 }
 
 func TestCartServiceHandler(t *testing.T) {

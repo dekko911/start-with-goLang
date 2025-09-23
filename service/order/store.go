@@ -43,7 +43,7 @@ func (s *Store) CreateOrderItem(o types.OrderItem) error {
 		o.Price,
 	}
 
-	_, err := s.db.Exec("INSERT INTO order_items", orderItem...)
+	_, err := s.db.Exec("INSERT INTO order_items (orderID, productID, quantity, price) VALUES (?,?,?,?)", orderItem...)
 	if err != nil {
 		return err
 	}
